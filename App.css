@@ -21,3 +21,95 @@ input, textarea, button {
   padding: 10px;
   font-size: 1em;
 }
+.App {
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f5f5f5;
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+.dashboard {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: #fff0f6;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.search-input {
+  padding: 12px;
+  margin-bottom: 20px;
+  width: 100%;
+  border: 2px solid #d9c9ff;
+  border-radius: 10px;
+  font-size: 16px;
+  background-color: #fff8fc;
+  transition: all 0.3s ease-in-out;
+}
+
+.search-input:focus {
+  outline: none;
+  box-shadow: 0 0 5px #d9c9ff;
+}
+
+.task-list {
+  margin-top: 2rem;
+}
+
+.task-item {
+  background: #fff5cc;
+  margin-bottom: 16px;
+  padding: 1rem;
+  border-radius: 12px;
+  text-align: left;
+  transition: all 0.4s ease;
+  animation: fadeIn 0.5s ease-in;
+}
+
+.task-item.completed {
+  background-color: #d1f5d3;
+  text-decoration: line-through;
+  opacity: 0.8;
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.task-actions {
+  margin-top: 0.5rem;
+}
+
+.task-actions button {
+  margin-right: 8px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.task-actions button:first-child {
+  background-color: #d9c9ff;
+}
+
+.task-actions button:last-child {
+  background-color: #ffb3c1;
+  color: #333;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

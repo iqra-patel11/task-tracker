@@ -7,20 +7,15 @@ import './styles/App.css';
 const App = () => {
   const [username, setUsername] = useState('');
   const [tasks, setTasks] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  // Load saved username and tasks from localStorage
   useEffect(() => {
     const savedUsername = localStorage.getItem('username');
     const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
-
-    if (savedUsername) {
-      setUsername(savedUsername);
-    }
-
+    if (savedUsername) setUsername(savedUsername);
     setTasks(savedTasks);
   }, []);
 
-  // Save tasks to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }, [tasks]);
@@ -35,7 +30,7 @@ const App = () => {
   };
 
   const handleDeleteTask = (id) => {
-    const confirmed = window.confirm('Are you sure you want to delete this task?');
+    const confirmed = window.confirm('Delete this task?');
     if (confirmed) {
       setTasks(tasks.filter((task) => task.id !== id));
     }
@@ -49,24 +44,35 @@ const App = () => {
     );
   };
 
+  const filteredTasks = tasks.filter((task) =>
+    task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (task.description && task.description.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
   return (
     <div className="App">
       <h1>🎀 Personal Task Tracker</h1>
 
       {username ? (
-        <>
+        <div className="dashboard">
           <p>Welcome, {username}!</p>
 
-          {/* Add Task Form */}
+          <input
+            type="text"
+            placeholder="🔍 Search tasks..."
+            className="search-input"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+
           <TaskForm onAddTask={handleAddTask} />
 
-          {/* Task List with Search */}
           <TaskList
-            tasks={tasks}
+            tasks={filteredTasks}
             onDelete={handleDeleteTask}
             onToggleComplete={handleToggleComplete}
           />
-        </>
+        </div>
       ) : (
         <Login onLogin={handleLogin} />
       )}
