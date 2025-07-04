@@ -1,12 +1,26 @@
-import React from 'react';
-import './styles/App.css';
+import logo from './logo.svg';
+import './App.css';
 
-function App() {
+  function App() {
+  const [username, setUsername] = useState('');
+
+  useEffect(() => {
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
+
   return (
     <div className="App">
-      <h1>Task Tracker</h1>
+      {username ? (
+        <h1>Welcome, {username}!</h1>
+      ) : (
+        <Login onLogin={setUsername} />
+      )}
     </div>
   );
 }
+
 
 export default App;
