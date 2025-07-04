@@ -1,32 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Login from './components/Login';
 import TaskForm from './components/TaskForm';
 import TaskList from './components/TaskList';
+import Menu from './components/Menu';
 import './styles/App.css';
 
 const App = () => {
-  const [username, setUsername] = useState('');
-  const [tasks, setTasks] = useState([]);
+  const [username, setUsername] = useState(localStorage.getItem('username') || '');
+  const [tasks, setTasks] = useState(() => {
+    const saved = localStorage.getItem('tasks');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [darkMode, setDarkMode] = useState(false);
-
-  useEffect(() => {
-    const savedUsername = localStorage.getItem('username');
-    const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    const savedTheme = localStorage.getItem('darkMode') === 'true';
-
-    if (savedUsername) setUsername(savedUsername);
-    setTasks(savedTasks);
-    setDarkMode(savedTheme);
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-  }, [tasks]);
-
-  useEffect(() => {
-    localStorage.setItem('darkMode', darkMode);
-  }, [darkMode]);
 
   const handleLogin = (name) => {
     setUsername(name);
@@ -34,64 +22,95 @@ const App = () => {
   };
 
   const handleAddTask = (newTask) => {
-    setTasks([...tasks, newTask]);
+    const updatedTasks = [...tasks, newTask];
+    setTasks(updatedTasks);
+    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+  };
+
+  const handleToggleTask = (id) => {
+    const updatedTasks = tasks.map((task) =>
+      task.id === id ? { ...task, completed: !task.completed } : task
+    );
+    setTasks(updatedTasks);
+    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
   };
 
   const handleDeleteTask = (id) => {
-    if (window.confirm('Delete this task?')) {
-      setTasks(tasks.filter((task) => task.id !== id));
-    }
+    const updatedTasks = tasks.filter((task) => task.id !== id);
+    setTasks(updatedTasks);
+    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
   };
 
-  const handleToggleComplete = (id) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
+  const handleEditTask = (id, newTitle, newDesc) => {
+    const updatedTasks = tasks.map((task) =>
+      task.id === id ? { ...task, title: newTitle, description: newDesc } : task
     );
+    setTasks(updatedTasks);
+    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
   };
 
-  const filteredTasks = tasks.filter((task) =>
-    task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (task.description && task.description.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const filteredTasks = tasks.filter((task) => {
+    const matchStatus =
+      filter === 'completed'
+        ? task.completed
+        : filter === 'pending'
+        ? !task.completed
+        : true;
+    const matchSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchStatus && matchSearch;
+  });
 
   return (
-    <div className={`App ${darkMode ? 'dark-mode' : 'light-mode'}`}>
-      <div className="top-bar">
-        <h1>🎀 Personal Task Tracker</h1>
-        <label className="toggle-switch">
-          <input
-            type="checkbox"
-            checked={darkMode}
-            onChange={() => setDarkMode(!darkMode)}
-          />
-          <span className="slider"></span>
-        </label>
-      </div>
-
-      {username ? (
-        <div className="dashboard">
-          <p>Welcome, {username}!</p>
-
-          <input
-            type="text"
-            placeholder="🔍 Search tasks..."
-            className="search-input"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-
-          <TaskForm onAddTask={handleAddTask} />
-
-          <TaskList
-            tasks={filteredTasks}
-            onDelete={handleDeleteTask}
-            onToggleComplete={handleToggleComplete}
-          />
-        </div>
-      ) : (
+    <div className={`app-container ${darkMode ? 'dark' : ''}`}>
+      {!username ? (
         <Login onLogin={handleLogin} />
+      ) : (
+        <div className="planner-box">
+          <header className="header-container">
+            <div className="header-left">
+              <h1>{username}'s Task Tracker</h1>
+            </div>
+            <div className="header-right">
+              <Menu
+                onLogout={() => {
+                  localStorage.removeItem('username');
+                  setUsername('');
+                }}
+                darkMode={darkMode}
+                toggleDarkMode={() => setDarkMode(!darkMode)}
+              />
+            </div>
+          </header>
+
+          <div className="main-content-wrapper">
+            <div className="top-controls">
+              <input
+                type="text"
+                placeholder="🔍 Search tasks..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-bar"
+              />
+              <div className="filter-buttons">
+                <button onClick={() => setFilter('all')}>All</button>
+                <button onClick={() => setFilter('completed')}>Completed</button>
+                <button onClick={() => setFilter('pending')}>Pending</button>
+              </div>
+            </div>
+
+            <main>
+              <TaskForm onAdd={handleAddTask} darkMode={darkMode} />
+              <section>
+                <TaskList
+                  tasks={filteredTasks}
+                  onToggle={handleToggleTask}
+                  onDelete={handleDeleteTask}
+                  onEdit={handleEditTask}
+                />
+              </section>
+            </main>
+          </div>
+        </div>
       )}
     </div>
   );

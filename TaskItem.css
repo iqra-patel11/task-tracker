@@ -1,6 +1,6 @@
 .task-item {
-  border: 2px solid #ffb6c1; /* pastel pink border */
-  background-color: #fff0f5; /* light pink background */
+  border: 2px solid #ffb6c1;
+  background-color: #fff0f5;
   padding: 1rem;
   margin: 1rem 0;
   border-radius: 20px;
@@ -14,7 +14,7 @@
 }
 
 .task-item.completed {
-  background-color: #d4fddc; /* pastel green */
+  background-color: #d4fddc;
   opacity: 0.85;
   text-decoration: line-through;
   border-color: #a0d6b4;
@@ -52,7 +52,7 @@
 .edit-mode button,
 .edit-button,
 .delete-button {
-  background-color: #dda0dd; /* pastel violet */
+  background-color: #dda0dd;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 12px;
@@ -67,7 +67,7 @@
 }
 
 .delete-button {
-  background-color: #f08080; /* pastel red/pink */
+  background-color: #f08080;
 }
 
 .delete-button:hover {
@@ -80,7 +80,7 @@
   margin-top: 0.5rem;
 }
 
-/* 🌙 Dark mode styles */
+/* 🌙 Dark Mode styles */
 .dark .task-item {
   background-color: #2c2c2c;
   border-color: #ff69b4;
@@ -112,4 +112,67 @@
 
 .dark .delete-button {
   background-color: #cc6666;
+}
+
+/* ❗️ Delete Confirm Popup */
+.delete-confirm-popup {
+  background-color: #ffe4e1;
+  border: 2px solid #ff69b4;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-top: 1rem;
+  animation: fadeIn 0.3s ease-in-out;
+  box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+}
+
+/* 🌙 Dark Mode Popup Styling */
+.dark .delete-confirm-popup {
+  background-color: #2e2e40;
+  border: 2px solid #ff90c2;
+  color: #fff;
+  box-shadow: 0 5px 15px rgba(255, 144, 194, 0.3);
+}
+
+.confirm-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.confirm-buttons .yes,
+.confirm-buttons .no {
+  padding: 0.4rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.confirm-buttons .yes {
+  background-color: #ff69b4;
+  color: white;
+}
+
+.confirm-buttons .no {
+  background-color: #dcdcdc;
+  color: #333;
+}
+
+/* 🌙 Dark Mode Confirm Buttons */
+.dark .confirm-buttons .no {
+  background-color: #555;
+  color: #f0f0f0;
+}
+
+/* 🌀 Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
