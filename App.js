@@ -1,37 +1,38 @@
-import TaskForm from 'C:\Users\iqrap\Desktop\task-tracker\src\components\taskform.js';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import Login from './components/Login';
+import TaskForm from './components/TaskForm';
+import './styles/App.css';  // ✅ styles folder
 
-  function App() {
+function App() {
   const [username, setUsername] = useState('');
+  const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
-    if (storedUsername) {
-      setUsername(storedUsername);
-    }
-  }, []);
-  
-  const [tasks, setTasks] = useState([]);
+    const storedTasks = localStorage.getItem('tasks');
 
-const handleAddTask = (task) => {
-  const updatedTasks = [...tasks, task];
-  setTasks(updatedTasks);
-  localStorage.setItem('tasks', JSON.stringify(updatedTasks));
-};
+    if (storedUsername) setUsername(storedUsername);
+    if (storedTasks) setTasks(JSON.parse(storedTasks));
+  }, []);
+
+  const handleAddTask = (task) => {
+    const updatedTasks = [...tasks, task];
+    setTasks(updatedTasks);
+    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+  };
 
   return (
     <div className="App">
       {username ? (
-        <h1>Welcome, {username}!</h1>
+        <>
+          <h1>Welcome, {username}!</h1>
+          <TaskForm onAddTask={handleAddTask} />
+        </>
       ) : (
         <Login onLogin={setUsername} />
       )}
     </div>
   );
-  <TaskForm onAddTask={handleAddTask} />
-
 }
-
 
 export default App;
