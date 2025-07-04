@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './styles/index.css';  // ✅ points to styles/index.css
+import './styles/index.css'; // Correct path!
 import App from './App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
