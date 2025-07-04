@@ -8,17 +8,25 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [tasks, setTasks] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     const savedUsername = localStorage.getItem('username');
     const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const savedTheme = localStorage.getItem('darkMode') === 'true';
+
     if (savedUsername) setUsername(savedUsername);
     setTasks(savedTasks);
+    setDarkMode(savedTheme);
   }, []);
 
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }, [tasks]);
+
+  useEffect(() => {
+    localStorage.setItem('darkMode', darkMode);
+  }, [darkMode]);
 
   const handleLogin = (name) => {
     setUsername(name);
@@ -30,8 +38,7 @@ const App = () => {
   };
 
   const handleDeleteTask = (id) => {
-    const confirmed = window.confirm('Delete this task?');
-    if (confirmed) {
+    if (window.confirm('Delete this task?')) {
       setTasks(tasks.filter((task) => task.id !== id));
     }
   };
@@ -50,8 +57,18 @@ const App = () => {
   );
 
   return (
-    <div className="App">
-      <h1>🎀 Personal Task Tracker</h1>
+    <div className={`App ${darkMode ? 'dark-mode' : 'light-mode'}`}>
+      <div className="top-bar">
+        <h1>🎀 Personal Task Tracker</h1>
+        <label className="toggle-switch">
+          <input
+            type="checkbox"
+            checked={darkMode}
+            onChange={() => setDarkMode(!darkMode)}
+          />
+          <span className="slider"></span>
+        </label>
+      </div>
 
       {username ? (
         <div className="dashboard">
